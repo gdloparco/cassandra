@@ -9,7 +9,6 @@
   let inputFieldAppeared = false;
 
   onMount(() => {
-    document.querySelector(".container").classList.remove("hidden");
     // Simulating typewriter effect completion after 5 seconds
     setTimeout(() => {
       typewriterFinished = true;
@@ -30,7 +29,7 @@
   }
 </script>
 
-<div class="container hidden">
+<div class="container">
   <br /><br />
   <div class="intro-text">
     <p>
@@ -221,9 +220,6 @@
     animation: move 3s infinite;
   }
 
-  .container.hidden {
-    display: none;
-  }
   @keyframes move {
     0% {
       transform: translateX(0);

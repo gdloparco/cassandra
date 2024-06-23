@@ -65,12 +65,3 @@ Backend
 - routes: This contains files that define API endpoints and map them to corresponding controllers 
 - services: Holds functions for fetching tarot card data from an external API and interpreting them using the OpenAI API 
 
-
-
-## Acknowledgements
-
-
-
-## Contact
-
-

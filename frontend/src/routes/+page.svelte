@@ -7,6 +7,10 @@
   let typewriterFinished = false;
   let inputFieldAppeared = false;
 
+
+// onMount is a lifecycle function in Svelte. 
+// It's called when a component is first rendered to the DOM.
+// It's similar to useEffect() in React.
   onMount(() => {
     // Simulating typewriter effect completion after 5 seconds
     setTimeout(() => {
@@ -18,7 +22,11 @@
   });
 
   function handleButtonClick() {
+    // encodeURIComponent includes user input in URLs safely (i.e. the input contains special characters)
+    // ? indicates the start of query parameters defined as key-value pairs
     const url = `/cassandra?name=${encodeURIComponent(userName)}`;
+    // window.location.href is a property that gets or sets the entire URL of the current page.
+    // By assigning a new value to it we are navigating to a new URL.
     window.location.href = url;
   }
 </script>
@@ -57,6 +65,7 @@
 <style>
   @import url("https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap");
 
+  /*  Styles should not be scoped locally but instead should be applied globally to all matching elements across the document. */
   :global(html) {
     background-image: url("../lib/assets/0-town.jpeg");
     background-size: cover;
@@ -198,6 +207,7 @@
     animation: move 3s infinite;
   }
 
+  /* Animation to create a horizontal shaking effect for the button. */
   @keyframes move {
     0% {
       transform: translateX(0);
@@ -210,6 +220,7 @@
     }
   }
 
+  /* Animation to create a pulsating box shadow effect for the button. */
   @keyframes box {
     0% {
       box-shadow: #27272c;

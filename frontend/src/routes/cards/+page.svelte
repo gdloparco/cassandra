@@ -21,18 +21,11 @@
   let showGuide = true;
   let hovered = [false, false, false];
 
-  // function showPopup() {
-  //   document.getElementById("popup").classList.remove("hidden");
-  // }
-
-  // function hidePopup() {
-  //   document.getElementById("popup").classList.add("hidden");
-  // }
-
   function handleButtonClick() {
     window.location.href = "/";
   }
 
+  // Function to handle card click for flipping. At the last flip (all true), Guide is removed and reading button is shown.
   function handleCardClick(index) {
     if (isCardVisible.every((value) => value === true)) {
       if (flipped[index] == false) {
@@ -45,6 +38,7 @@
     }
   }
 
+  // Function to draw a card (make them visible), if all cards visible then hide the deck.
   function drawCard() {
     for (let i = 0; i < isCardVisible.length; i++) {
       if (isCardVisible[i] === false) {
@@ -57,25 +51,30 @@
     }
   }
 
+  // Function to close interpretation modal (return to the cards)
   function closeInterpretationModal() {
     showInterpretation = false;
   }
 
+  // Get URL parameters if in browser environment
   if (typeof window !== "undefined") {
+    // .search contains the query string part of the URL, including the ? character and everything that follows it.
+    // URLSearchParams is a built-in JavaScript object that provides an interface for working with query parameters in a URL.
     const urlParams = new URLSearchParams(window.location.search);
     userName = urlParams.get("name") || "";
     userStory = urlParams.get("userstory") || "";
   }
-  console.log(userName);
-  console.log(userStory);
 
   async function getFate() {
     try {
       let data;
+      // do { ... } while (!data.interpretation); Executes a loop that continues until data.interpretation is truthy.
       do {
+        // await fetch performs an asynchronous HTTP request to the backend to get interpretation
         const res = await fetch(
-          `http://localhost:8082/cards/interpret/${requestID}`,
+          `http://cassandrabe.onrender.com/cards/interpret/${requestID}`,
         );
+        // converts the response body to JSON format, also asynchronously
         data = await res.json();
         if (data.interpretation) {
           interpretation = data.interpretation;
@@ -87,17 +86,19 @@
     } catch (err) {
       error = err.message;
       console.error("Error:", err);
+    // finally executes cleanup code after the try and catch blocks
     } finally {
       showInterpretation = true;
       postShowInterpretation = true;
     }
   }
 
+  // onMount is async and will run when the component is added to the DOM for the first time.
   onMount(async () => {
-    document.querySelector(".container").classList.remove("hidden");
     try {
+        // await fetch performs an asynchronous HTTP request to the backend to send data for interpretation and get the cards back.
       const res = await fetch(
-        `http://localhost:8082/cards?name=${userName}&userstory=${userStory}`,
+        `http://cassandrabe.onrender.com/cards?name=${userName}&userstory=${userStory}`,
       );
       const data = await res.text();
       threeCards = JSON.parse(data).cards;
@@ -110,26 +111,13 @@
       isLoading = false;
     }
   });
-
-  // let isHovering = [false, false, false];
-
-  // function hoverCard(index) {
-  //   isHovering[index] = true;
-  // }
-
-  // function unhoverCard(index) {
-  //   isHovering[index] = false;
-  // }
-
-  // <!-- on:mouseenter={() => hoverCard(index)}
-  //             on:mouseleave={() => unhoverCard(index)} -->
 </script>
 
 <link
   href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
   rel="stylesheet"
 />
-<div class="container mx-auto mt-8 hidden">
+<div class="container mx-auto mt-8">
   <div class="flex justify-between items-center mb-8">
     <h3 class="text-2xl font-bold card-display-title">Cassandra's Parlor</h3>
     {#if showGuide && isCardVisible.every((value) => value === true)}
@@ -180,15 +168,10 @@
               class="bg-card-container"
               on:mouseenter={() => {
                 if (postFlip[index]) hovered[index] = true;
-                console.log("Postflip below");
-                console.log(postFlip[index]);
-                console.log("Hovered below");
-                console.log(hovered[index]);
               }}
               on:mouseleave={() => {
                 if (isCardVisible[index] && flipped[index])
                   (hovered[index] = false), (postFlip[index] = true);
-                console.log(postFlip[index]);
               }}
               role="link"
               tabindex="0"
@@ -241,12 +224,10 @@
               class="bg-card-container"
               on:mouseenter={() => {
                 if (postFlip[index]) hovered[index] = true;
-                console.log(postFlip[index]);
               }}
               on:mouseleave={() => {
                 if (isCardVisible[index] && flipped[index])
                   (hovered[index] = false), (postFlip[index] = true);
-                console.log(postFlip[index]);
               }}
               role="link"
               tabindex="0"
@@ -298,12 +279,10 @@
               class="bg-card-container"
               on:mouseenter={() => {
                 if (postFlip[index]) hovered[index] = true;
-                console.log(postFlip[index]);
               }}
               on:mouseleave={() => {
                 if (isCardVisible[index] && flipped[index])
                   (hovered[index] = false), (postFlip[index] = true);
-                console.log(postFlip[index]);
               }}
               role="link"
               tabindex="0"
@@ -663,10 +642,6 @@
     width: 15px;
     left: 80%;
     animation: move 3s infinite;
-  }
-
-  .container.hidden {
-    display: none;
   }
 
   @keyframes move {

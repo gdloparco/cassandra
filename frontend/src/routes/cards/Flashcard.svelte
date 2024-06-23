@@ -53,6 +53,7 @@
       opacity: 1;
     }
   }
+  
   .reveal-delay {
     animation: delayReveal 0.4s linear;
   }

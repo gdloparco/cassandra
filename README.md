@@ -14,8 +14,6 @@ Giandomenico Loparco and Matt Doyle).
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Project Structure](#project-structure)
-- [Acknowledgements](#acknowledgements)
-- [Contact](#contact)
 
 ## Description
 Team Tarot is a tarot card reading application that, when the user is ready, will deal 3 random cards from a 78 card deck of tarot cards, provide an explanation for each, and then give a reading. Each card will appear reversed or upright and their meanings will be displayed accordingly. The type of card whether major or minor will also be printed, each of the three tarot cards printed will provide information about the past, present and the future.

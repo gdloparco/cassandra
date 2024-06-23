@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"math/rand"
 	"net/http"
 	"os"
@@ -20,12 +19,16 @@ var LocalStorage map[string]string = make(map[string]string)
 
 // Function to select 3 random tarot cards from the deck
 func GetRandomCard(deck []models.Card, currentCards []models.Card) models.Card {
+	// Initialize a random number generator with the current time as the seed
 	randomiser := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	for {
+		// Select a random index
 		randomIndex := randomiser.Intn(len(deck))
+		// Get the card at the random index
 		randomCard := deck[randomIndex]
 
+		// Check if the card is a duplicate
 		isDuplicate := false
 		for _, card := range currentCards {
 			if card.CardName == randomCard.CardName {
@@ -34,6 +37,7 @@ func GetRandomCard(deck []models.Card, currentCards []models.Card) models.Card {
 			}
 		}
 
+		// Return the card if it's not a duplicate
 		if !isDuplicate {
 			return randomCard
 		}
@@ -42,18 +46,21 @@ func GetRandomCard(deck []models.Card, currentCards []models.Card) models.Card {
 
 // Function to get and interpret 3 tarot cards
 func GetandInterpretThreeCards(ctx *gin.Context) {
-	deck, err := services.FetchTarotCards() //returns a type of []Card
+	// call below returns a type of []Card containing the whole deck from the API
+	deck, err := services.FetchTarotCards() 
 	if err != nil {
 		errors.SendInternalError(ctx, err)
 		return
 	}
+
+	// Generate a new UUID for the request
 	requestID := uuid.New()
 	var threeCards []models.Card
 	threeCards = append(threeCards, GetRandomCard(deck, threeCards))
 	threeCards = append(threeCards, GetRandomCard(deck, threeCards))
 	threeCards = append(threeCards, GetRandomCard(deck, threeCards))
 
-	// from here below we convert the three Card into three JSONCard
+	// from here below we convert the three Card objects into three JSONCard objects
 
 	var jsonCards []models.JSONCard
 	var cardNames []string
@@ -96,7 +103,6 @@ func GetandInterpretThreeCards(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"cards": jsonCards, "requestID": requestID})
 	userStory := ctx.Query("userstory")
 	userName := ctx.Query("name")
-	fmt.Print(userName, userStory)
 
 	// here we use Open AI's API to generate a reading of our three cards, we store this reading locally to return it to the user later.
 	go func() {
@@ -106,15 +112,16 @@ func GetandInterpretThreeCards(ctx *gin.Context) {
 			LocalStorage[requestID.String()] = interpretation
 			return
 		}
+		// Get the OpenAI API key from environment variables
 		apiKey := os.Getenv("API_KEY")
 		interpretation, err := services.InterpretTarotCards(apiKey, cardNames, requestID, userStory, userName)
 		if err != nil {
 			errors.SendInternalError(ctx, err)
 			return
 		}
+		// Store the interpretation in local storage
 		LocalStorage[requestID.String()] = interpretation
 		GetInterpretation(ctx)
-		fmt.Println(interpretation)
 	}()
 }
 
@@ -138,7 +145,9 @@ func GetInterpretation(ctx *gin.Context) {
 
 // function to generate reversed cards at random
 func ReverseRandomiser() bool {
+	// Initialize a random number generator with the current time as the seed
 	randomiser := rand.New(rand.NewSource(time.Now().UnixNano()))
+	// Generate a random number, either 0 or 1
 	randomBool := randomiser.Intn(2)
 	return randomBool == 0
 }

@@ -1,5 +1,6 @@
 package models
 
+// struct used to store information coming from external tarot deck API
 type Card struct {
 	CardName       string `json:"name"`
 	Type           string `json:"type"`
